@@ -80,16 +80,19 @@ class SteamPriceTracker:
                     check_price_total_value += check_price_value
                     break
         print(''.ljust(128, '-'))
+        # should probably move inventory totals to a separate function for better reusability
+        # will probably put this off until its relevant
         total_price_change = check_price_total_value - buy_price_total_value
         total_percent_change = 100 * total_price_change / buy_price_total_value
         color = self.COLORS['green'] if total_percent_change > 1 else ( self.COLORS['red'] if total_percent_change < -1 else self.COLORS['reset'])
+        # formatting
         check_price_total = f'${check_price_total_value:.2f}USD'.rjust(12)
         buy_price_total = f'${buy_price_total_value:.2f}USD'.rjust(12)
         total_price_change = f'-${-1*total_price_change:.2f}USD'.rjust(12) if total_price_change < 0 else f'${total_price_change:.2f}USD'.rjust(12)
         total_percent_change = f'{total_percent_change:.2f}%'.rjust(8)
         print(f"{'total'.ljust(42)} | {buy_price_total} | {12*' '} | {check_price_total} | {12*' '} | {color}{total_price_change} | {total_percent_change}{self.COLORS['reset']}")
         print(''.ljust(128, '-'))
-    def display_item(self, item:dict, update_price: bool=False) -> None:
+    def display_item(self, item:dict, update_price: bool=False) -> Tuple[float, float]:
         name = self.__format_name__(item)
         prices, buy_price_value, check_price_value = self.__format_prices__(item, update_price)
         print(f"{name} | {prices}")
